@@ -208,16 +208,16 @@ resource "azurerm_container_group" "backend" {
     }
 
     environment_variables = {
-      "SPRING_DATA_MONGODB_URI"          = azurerm_cosmosdb_account.mongodb.connection_strings[0]
       "SPRING_DATA_MONGODB_DATABASE"     = var.cosmosdb_database_name
       "SPRING_ELASTICSEARCH_URIS"        = var.enable_elasticsearch ? "http://${azurerm_container_group.elasticsearch[0].fqdn}:${var.elasticsearch_port}" : ""
       "SERVER_PORT"                      = tostring(var.backend_port)
-      "ANTHROPIC_API_KEY"                = var.anthropic_api_key
       "CORS_ALLOWED_ORIGINS"             = "*"
     }
 
     secure_environment_variables = {
-      "JWT_SECRET" = var.jwt_secret != "" ? var.jwt_secret : random_string.suffix.result
+      "SPRING_DATA_MONGODB_URI" = azurerm_cosmosdb_account.mongodb.connection_strings[0]
+      "ANTHROPIC_API_KEY"       = var.anthropic_api_key
+      "JWT_SECRET"              = var.jwt_secret != "" ? var.jwt_secret : random_string.suffix.result
     }
 
     liveness_probe {
