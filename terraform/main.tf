@@ -192,23 +192,23 @@ resource "azurerm_container_app" "backend" {
       }
 
       liveness_probe {
-        transport = "HTTP"
-        path      = "/actuator/health"
-        port      = var.backend_port
-        initial_delay_seconds = 180
-        period_seconds        = 30
-        failure_threshold     = 5
-        timeout               = 15
+        transport      = "HTTP"
+        path           = "/actuator/health"
+        port           = var.backend_port
+        initial_delay  = 180
+        interval_seconds = 30
+        failure_count_threshold = 5
+        timeout        = 15
       }
 
       readiness_probe {
-        transport = "HTTP"
-        path      = "/actuator/health/readiness"
-        port      = var.backend_port
-        initial_delay_seconds = 120
-        period_seconds        = 15
-        failure_threshold     = 5
-        timeout               = 10
+        transport      = "HTTP"
+        path           = "/actuator/health/readiness"
+        port           = var.backend_port
+        initial_delay  = 120
+        interval_seconds = 15
+        failure_count_threshold = 5
+        timeout        = 10
       }
     }
   }
