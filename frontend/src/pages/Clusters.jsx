@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Clusters.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 const Clusters = () => {
   const [clusterData, setClusterData] = useState(null);
