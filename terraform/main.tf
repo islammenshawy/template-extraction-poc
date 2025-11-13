@@ -287,12 +287,6 @@ resource "azurerm_container_app" "frontend" {
   ingress {
     external_enabled = true
     target_port      = var.frontend_port
-
-    custom_domain {
-      name                     = "swift-template.islam-org.work"
-      certificate_binding_type = "SniEnabled"
-    }
-
     traffic_weight {
       latest_revision = true
       percentage      = 100
