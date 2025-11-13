@@ -245,6 +245,7 @@ jobs:
           terraform plan \
             -var="anthropic_api_key=${{ secrets.ANTHROPIC_API_KEY }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
             -out=tfplan \
             -no-color
         continue-on-error: true
@@ -313,6 +314,7 @@ jobs:
           terraform apply \
             -var="anthropic_api_key=${{ secrets.ANTHROPIC_API_KEY }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
             -auto-approve
 
       - name: Get Terraform Outputs
@@ -365,6 +367,7 @@ jobs:
           terraform destroy \
             -var="anthropic_api_key=${{ secrets.ANTHROPIC_API_KEY }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
+            -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
             -auto-approve
 
       - name: Destruction Summary

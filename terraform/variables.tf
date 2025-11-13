@@ -166,3 +166,16 @@ variable "custom_domain" {
   type        = string
   default     = ""
 }
+
+variable "enable_cloudflare_tunnel" {
+  description = "Enable Cloudflare Tunnel for secure HTTPS access"
+  type        = bool
+  default     = false
+}
+
+variable "cloudflare_tunnel_token" {
+  description = "Cloudflare Tunnel token for named tunnel with custom domain"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

@@ -271,6 +271,32 @@ resource "azurerm_container_app" "frontend" {
         value = "https://${azurerm_container_app.backend.ingress[0].fqdn}/api"
       }
     }
+
+    # Cloudflare Tunnel sidecar container for HTTPS with custom domain
+    dynamic "container" {
+      for_each = var.enable_cloudflare_tunnel ? [1] : []
+      content {
+        name   = "cloudflared"
+        image  = "${data.azurerm_container_registry.acr.login_server}/cloudflared:latest"
+        cpu    = 0.5
+        memory = "0.5Gi"
+
+        command = var.cloudflare_tunnel_token != "" ? [
+          "cloudflared",
+          "tunnel",
+          "--no-autoupdate",
+          "run",
+          "--token",
+          var.cloudflare_tunnel_token
+        ] : [
+          "cloudflared",
+          "tunnel",
+          "--no-autoupdate",
+          "--url",
+          "http://127.0.0.1:${var.frontend_port}"
+        ]
+      }
+    }
   }
 
   registry {

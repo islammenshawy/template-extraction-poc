@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
-const API_V2_BASE_URL = 'http://localhost:8080/api/v2';
+// Use environment variable for API URL, fallback to localhost for development
+const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = BASE_API_URL.endsWith('/api') ? BASE_API_URL : `${BASE_API_URL}`;
+const API_V2_BASE_URL = BASE_API_URL.replace(/\/api$/, '/api/v2');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -101,9 +103,9 @@ export const transactionsApi = {
 // Auth API
 export const authApi = {
   login: (email, password) =>
-    axios.post('http://localhost:8080/api/auth/login', { email, password }),
+    axios.post(`${API_BASE_URL}/auth/login`, { email, password }),
   register: (email, password, token) =>
-    axios.post(`http://localhost:8080/api/auth/register?token=${token}`, { email, password }),
+    axios.post(`${API_BASE_URL}/auth/register?token=${token}`, { email, password }),
   invite: (email) => api.post('/auth/invite', { email }),
   getUsers: () => api.get('/auth/users'),
   toggleUser: (id) => api.put(`/auth/users/${id}/toggle`),

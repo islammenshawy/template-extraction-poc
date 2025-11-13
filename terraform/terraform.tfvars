@@ -13,6 +13,7 @@ cosmosdb_enable_free_tier = true
 
 # Feature Flags
 enable_elasticsearch = false
+enable_cloudflare_tunnel = true
 
 # Tags
 tags = {
