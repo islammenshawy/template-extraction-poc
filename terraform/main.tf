@@ -123,124 +123,129 @@ resource "azurerm_cosmosdb_mongo_collection" "transactions" {
   }
 }
 
-# Storage Account for Elasticsearch data persistence
-resource "azurerm_storage_account" "elasticsearch" {
-  count                    = var.enable_elasticsearch ? 1 : 0
-  name                     = "elasticstorage${random_string.suffix.result}"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  min_tls_version          = "TLS1_2"
+# Container Apps Environment - Required for all Container Apps
+resource "azurerm_container_app_environment" "main" {
+  name                       = "containerapp-env-${random_string.suffix.result}"
+  location                   = azurerm_resource_group.main.location
+  resource_group_name        = azurerm_resource_group.main.name
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.container_logs.id
 
   tags = merge(var.tags, { Environment = var.environment })
 }
 
-resource "azurerm_storage_share" "elasticsearch" {
-  count                = var.enable_elasticsearch ? 1 : 0
-  name                 = "elasticsearch-data"
-  storage_account_name = azurerm_storage_account.elasticsearch[0].name
-  quota                = 5 # 5 GB minimal quota
-}
-
-# Container Group for Elasticsearch
-resource "azurerm_container_group" "elasticsearch" {
-  count               = var.enable_elasticsearch ? 1 : 0
-  name                = "elasticsearch-${var.environment}"
+# Log Analytics Workspace for container logging
+resource "azurerm_log_analytics_workspace" "container_logs" {
+  name                = "container-logs-${random_string.suffix.result}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  ip_address_type     = "Public"
-  dns_name_label      = "elasticsearch-${var.environment}-${random_string.suffix.result}"
-  os_type             = "Linux"
-
-  container {
-    name   = "elasticsearch"
-    image  = "docker.elastic.co/elasticsearch/elasticsearch:8.11.0"
-    cpu    = var.elasticsearch_container_cpu
-    memory = var.elasticsearch_container_memory
-
-    ports {
-      port     = var.elasticsearch_port
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      "discovery_type"         = "single-node"
-      "xpack_security_enabled" = "false"
-      "ES_JAVA_OPTS"           = "-Xms512m -Xmx512m"
-    }
-
-    volume {
-      name                 = "elasticsearch-data"
-      mount_path           = "/usr/share/elasticsearch/data"
-      storage_account_name = azurerm_storage_account.elasticsearch[0].name
-      storage_account_key  = azurerm_storage_account.elasticsearch[0].primary_access_key
-      share_name           = azurerm_storage_share.elasticsearch[0].name
-    }
-  }
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 
   tags = merge(var.tags, { Environment = var.environment })
 }
 
-# Container Group for Backend
-resource "azurerm_container_group" "backend" {
-  name                = "backend-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  ip_address_type     = "Public"
-  dns_name_label      = "backend-${var.environment}-${random_string.suffix.result}"
-  os_type             = "Linux"
+# Container App for Backend
+resource "azurerm_container_app" "backend" {
+  name                         = "backend-${var.environment}"
+  container_app_environment_id = azurerm_container_app_environment.main.id
+  resource_group_name          = azurerm_resource_group.main.name
+  revision_mode                = "Single"
 
-  container {
-    name   = "backend"
-    image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-backend:${var.backend_image_tag}"
-    cpu    = var.backend_container_cpu
-    memory = var.backend_container_memory
+  template {
+    min_replicas = 0  # Scale to zero when idle (free tier optimization)
+    max_replicas = 1
 
-    ports {
-      port     = var.backend_port
-      protocol = "TCP"
-    }
+    container {
+      name   = "backend"
+      image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-backend:${var.backend_image_tag}"
+      cpu    = var.backend_container_cpu
+      memory = "${var.backend_container_memory}Gi"
 
-    environment_variables = {
-      "SPRING_DATA_MONGODB_DATABASE"     = var.cosmosdb_database_name
-      "SPRING_ELASTICSEARCH_URIS"        = var.enable_elasticsearch ? "http://${azurerm_container_group.elasticsearch[0].fqdn}:${var.elasticsearch_port}" : ""
-      "SERVER_PORT"                      = tostring(var.backend_port)
-      "CORS_ALLOWED_ORIGINS"             = "*"
-      "SPRING_DATA_MONGODB_URI"          = azurerm_cosmosdb_account.mongodb.connection_strings[0]
-      "ANTHROPIC_API_KEY"                = var.anthropic_api_key
-      "JWT_SECRET"                       = var.jwt_secret != "" ? var.jwt_secret : random_string.suffix.result
-    }
-
-    liveness_probe {
-      http_get {
-        path   = "/actuator/health"
-        port   = var.backend_port
-        scheme = "Http"
+      env {
+        name  = "SPRING_DATA_MONGODB_DATABASE"
+        value = var.cosmosdb_database_name
       }
-      initial_delay_seconds = 180
-      period_seconds        = 30
-      failure_threshold     = 5
-      timeout_seconds       = 15
-    }
 
-    readiness_probe {
-      http_get {
-        path   = "/actuator/health/readiness"
-        port   = var.backend_port
-        scheme = "Http"
+      env {
+        name  = "SERVER_PORT"
+        value = tostring(var.backend_port)
       }
-      initial_delay_seconds = 120
-      period_seconds        = 15
-      failure_threshold     = 5
-      timeout_seconds       = 10
+
+      env {
+        name  = "CORS_ALLOWED_ORIGINS"
+        value = "*"
+      }
+
+      env {
+        name        = "SPRING_DATA_MONGODB_URI"
+        secret_name = "mongodb-connection-string"
+      }
+
+      env {
+        name        = "ANTHROPIC_API_KEY"
+        secret_name = "anthropic-api-key"
+      }
+
+      env {
+        name        = "JWT_SECRET"
+        secret_name = "jwt-secret"
+      }
+
+      liveness_probe {
+        transport = "HTTP"
+        path      = "/actuator/health"
+        port      = var.backend_port
+        initial_delay_seconds = 180
+        period_seconds        = 30
+        failure_threshold     = 5
+        timeout               = 15
+      }
+
+      readiness_probe {
+        transport = "HTTP"
+        path      = "/actuator/health/readiness"
+        port      = var.backend_port
+        initial_delay_seconds = 120
+        period_seconds        = 15
+        failure_threshold     = 5
+        timeout               = 10
+      }
     }
   }
 
-  image_registry_credential {
-    server   = data.azurerm_container_registry.acr.login_server
-    username = data.azurerm_container_registry.acr.admin_username
-    password = data.azurerm_container_registry.acr.admin_password
+  secret {
+    name  = "mongodb-connection-string"
+    value = azurerm_cosmosdb_account.mongodb.connection_strings[0]
+  }
+
+  secret {
+    name  = "anthropic-api-key"
+    value = var.anthropic_api_key
+  }
+
+  secret {
+    name  = "jwt-secret"
+    value = var.jwt_secret != "" ? var.jwt_secret : random_string.suffix.result
+  }
+
+  registry {
+    server               = data.azurerm_container_registry.acr.login_server
+    username             = data.azurerm_container_registry.acr.admin_username
+    password_secret_name = "acr-password"
+  }
+
+  secret {
+    name  = "acr-password"
+    value = data.azurerm_container_registry.acr.admin_password
+  }
+
+  ingress {
+    external_enabled = true
+    target_port      = var.backend_port
+    traffic_weight {
+      latest_revision = true
+      percentage      = 100
+    }
   }
 
   tags = merge(var.tags, { Environment = var.environment })
@@ -252,35 +257,48 @@ resource "azurerm_container_group" "backend" {
   ]
 }
 
-# Container Group for Frontend
-resource "azurerm_container_group" "frontend" {
-  name                = "frontend-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  ip_address_type     = "Public"
-  dns_name_label      = "frontend-${var.environment}-${random_string.suffix.result}"
-  os_type             = "Linux"
+# Container App for Frontend
+resource "azurerm_container_app" "frontend" {
+  name                         = "frontend-${var.environment}"
+  container_app_environment_id = azurerm_container_app_environment.main.id
+  resource_group_name          = azurerm_resource_group.main.name
+  revision_mode                = "Single"
 
-  container {
-    name   = "frontend"
-    image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-frontend:${var.frontend_image_tag}"
-    cpu    = var.frontend_container_cpu
-    memory = var.frontend_container_memory
+  template {
+    min_replicas = 0  # Scale to zero when idle (free tier optimization)
+    max_replicas = 1
 
-    ports {
-      port     = var.frontend_port
-      protocol = "TCP"
-    }
+    container {
+      name   = "frontend"
+      image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-frontend:${var.frontend_image_tag}"
+      cpu    = var.frontend_container_cpu
+      memory = "${var.frontend_container_memory}Gi"
 
-    environment_variables = {
-      "VITE_API_BASE_URL" = "http://${azurerm_container_group.backend.fqdn}:${var.backend_port}/api"
+      env {
+        name  = "VITE_API_BASE_URL"
+        value = "https://${azurerm_container_app.backend.ingress[0].fqdn}/api"
+      }
     }
   }
 
-  image_registry_credential {
-    server   = data.azurerm_container_registry.acr.login_server
-    username = data.azurerm_container_registry.acr.admin_username
-    password = data.azurerm_container_registry.acr.admin_password
+  registry {
+    server               = data.azurerm_container_registry.acr.login_server
+    username             = data.azurerm_container_registry.acr.admin_username
+    password_secret_name = "acr-password"
+  }
+
+  secret {
+    name  = "acr-password"
+    value = data.azurerm_container_registry.acr.admin_password
+  }
+
+  ingress {
+    external_enabled = true
+    target_port      = var.frontend_port
+    traffic_weight {
+      latest_revision = true
+      percentage      = 100
+    }
   }
 
   tags = merge(var.tags, { Environment = var.environment })

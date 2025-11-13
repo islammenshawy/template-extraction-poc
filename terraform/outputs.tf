@@ -31,43 +31,32 @@ output "cosmosdb_endpoint" {
   value       = azurerm_cosmosdb_account.mongodb.endpoint
 }
 
-output "elasticsearch_fqdn" {
-  description = "Elasticsearch FQDN"
-  value       = var.enable_elasticsearch ? azurerm_container_group.elasticsearch[0].fqdn : "disabled"
-}
-
-output "elasticsearch_url" {
-  description = "Elasticsearch URL"
-  value       = var.enable_elasticsearch ? "http://${azurerm_container_group.elasticsearch[0].fqdn}:${var.elasticsearch_port}" : "disabled"
-}
-
 output "backend_fqdn" {
   description = "Backend application FQDN"
-  value       = azurerm_container_group.backend.fqdn
+  value       = azurerm_container_app.backend.ingress[0].fqdn
 }
 
 output "backend_url" {
   description = "Backend application URL"
-  value       = "http://${azurerm_container_group.backend.fqdn}:${var.backend_port}"
+  value       = "https://${azurerm_container_app.backend.ingress[0].fqdn}"
 }
 
 output "frontend_fqdn" {
   description = "Frontend application FQDN"
-  value       = azurerm_container_group.frontend.fqdn
+  value       = azurerm_container_app.frontend.ingress[0].fqdn
 }
 
 output "frontend_url" {
   description = "Frontend application URL"
-  value       = "http://${azurerm_container_group.frontend.fqdn}"
+  value       = "https://${azurerm_container_app.frontend.ingress[0].fqdn}"
 }
 
 output "deployment_summary" {
   description = "Deployment summary"
   value = {
-    environment       = var.environment
-    location          = var.location
-    frontend_url      = "http://${azurerm_container_group.frontend.fqdn}"
-    backend_url       = "http://${azurerm_container_group.backend.fqdn}:${var.backend_port}"
-    elasticsearch_url = var.enable_elasticsearch ? "http://${azurerm_container_group.elasticsearch[0].fqdn}:${var.elasticsearch_port}" : "disabled"
+    environment  = var.environment
+    location     = var.location
+    frontend_url = "https://${azurerm_container_app.frontend.ingress[0].fqdn}"
+    backend_url  = "https://${azurerm_container_app.backend.ingress[0].fqdn}"
   }
 }
