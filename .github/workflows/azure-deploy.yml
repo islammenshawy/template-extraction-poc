@@ -125,6 +125,12 @@ jobs:
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
+      - name: Get backend URL
+        id: backend-url
+        run: |
+          BACKEND_FQDN=$(az containerapp show --name backend-dev --resource-group template-extraction-rg --query "properties.configuration.ingress.fqdn" -o tsv 2>/dev/null || echo "backend-dev.orangebeach-7afdf297.eastus.azurecontainerapps.io")
+          echo "fqdn=$BACKEND_FQDN" >> $GITHUB_OUTPUT
+
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
@@ -133,6 +139,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
+          build-args: |
+            VITE_API_BASE_URL=https://${{ steps.backend-url.outputs.fqdn }}/api
           cache-from: type=registry,ref=${{ secrets.ACR_NAME }}.azurecr.io/template-extraction-frontend:buildcache
           cache-to: type=registry,ref=${{ secrets.ACR_NAME }}.azurecr.io/template-extraction-frontend:buildcache,mode=max
 

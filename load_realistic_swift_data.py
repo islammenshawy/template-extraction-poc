@@ -6,9 +6,10 @@ Creates diverse messages with natural variations to produce varying confidence s
 
 import requests
 import random
+import os
 from datetime import datetime, timedelta
 
-BASE_URL = "http://localhost:8080/api/v2"
+BASE_URL = os.getenv('API_BASE_URL', "http://localhost:8080/api/v2")
 
 # Realistic trading pairs with different characteristics
 TRADING_PAIRS = [
