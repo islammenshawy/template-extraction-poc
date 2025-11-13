@@ -35,7 +35,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TERRAFORM_VERSION: '1.6.0'
+  TERRAFORM_VERSION: '1.9.8'
   WORKING_DIRECTORY: './terraform'
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
