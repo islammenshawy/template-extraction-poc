@@ -1,0 +1,62 @@
+.upload-mode-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mode-button {
+  padding: 12px 24px;
+  border: 2px solid #dee2e6;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mode-button:hover {
+  border-color: #007bff;
+}
+
+.mode-button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.file-input-wrapper {
+  margin-bottom: 0.5rem;
+}
+
+.file-input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-name {
+  margin-top: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.help-text {
+  margin-top: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}

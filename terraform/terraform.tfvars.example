@@ -1,0 +1,49 @@
+# Example Terraform Variables File
+# Copy this file to terraform.tfvars and fill in your values
+
+# Azure Configuration
+resource_group_name = "template-extraction-rg"
+location            = "eastus"
+environment         = "dev"
+
+# Container Registry (leave empty for auto-generation)
+acr_name = ""
+
+# Cosmos DB Configuration
+cosmosdb_account_name     = ""
+cosmosdb_database_name    = "swift-templates"
+cosmosdb_enable_free_tier = true
+cosmosdb_max_throughput   = 1000
+
+# Container Resource Allocation (free tier optimized)
+backend_container_cpu       = 1
+backend_container_memory    = 2
+frontend_container_cpu      = 0.5
+frontend_container_memory   = 1
+elasticsearch_container_cpu = 1
+elasticsearch_container_memory = 2
+
+# Application Configuration
+backend_port       = 8080
+frontend_port      = 80
+elasticsearch_port = 9200
+
+# Docker Image Tags
+backend_image_tag  = "latest"
+frontend_image_tag = "latest"
+
+# Secrets (set these via environment variables or GitHub secrets)
+anthropic_api_key = "" # Set via TF_VAR_anthropic_api_key or GitHub secret
+jwt_secret        = "" # Set via TF_VAR_jwt_secret or GitHub secret
+
+# Feature Flags
+enable_elasticsearch = true
+enable_custom_domain = false
+custom_domain        = ""
+
+# Tags
+tags = {
+  Project     = "Template Extraction"
+  ManagedBy   = "Terraform"
+  Application = "SWIFT Template Extraction POC"
+}

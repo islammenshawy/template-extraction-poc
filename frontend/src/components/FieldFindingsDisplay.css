@@ -1,0 +1,314 @@
+/* Field Findings Display - Clean Table Design */
+.field-findings-container {
+  padding: 0;
+  margin: 0;
+}
+
+/* Summary Bar - Single line with risk and counts */
+.analysis-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.875rem;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(249, 250, 251, 0.95));
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.summary-left {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+}
+
+.risk-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.summary-text {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.summary-counts {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Findings Table */
+.findings-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+/* Finding Row - Table-like design */
+.finding-row {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-left: 3px solid;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.finding-row:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Main Row - Always visible */
+.finding-main {
+  display: grid;
+  grid-template-columns: 32px minmax(180px, 220px) 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.finding-main:hover {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.finding-severity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.severity-icon {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.finding-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-tag {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: white;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.2px;
+  flex-shrink: 0;
+}
+
+.field-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.finding-desc {
+  font-size: 0.8125rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+/* Value Comparison in Expanded Details - Stacked Layout */
+.value-comparison-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.value-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.value-row.expected {
+  padding-left: 0.5rem;
+  border-left: 2px solid #9ca3af;
+}
+
+.value-row.actual {
+  padding-left: 0.5rem;
+  border-left: 2px solid #1976d2;
+}
+
+.value-label {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 65px;
+  flex-shrink: 0;
+}
+
+.value-content {
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  color: #1f2937;
+  word-break: break-word;
+  flex: 1;
+}
+
+.value-row.actual .value-content {
+  color: #1976d2;
+}
+
+.detail-item.values {
+  background: white;
+  border-left: 2px solid #e5e7eb;
+  padding: 0.5rem;
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  opacity: 0.6;
+}
+
+.expand-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Expanded Details Section */
+.finding-details {
+  padding: 0.625rem 0.875rem 0.75rem 0.875rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 200px;
+  }
+}
+
+.detail-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  padding: 0.375rem 0.5rem;
+  border-radius: 3px;
+  background: white;
+  border-left: 2px solid #d1d5db;
+}
+
+.detail-item.impact {
+  background: #fef2f2;
+  border-left-color: #ef4444;
+}
+
+.detail-item.action {
+  background: #f0fdf4;
+  border-left-color: #22c55e;
+}
+
+.detail-label {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 70px;
+}
+
+.detail-value {
+  color: #374151;
+  flex: 1;
+}
+
+/* Analysis Footer - Recommendation */
+.analysis-footer {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fbbf24;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+.analysis-footer strong {
+  color: #92400e;
+  margin-right: 0.375rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .finding-main {
+    grid-template-columns: 28px 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .finding-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .field-name {
+    font-size: 0.8125rem;
+  }
+
+  .finding-desc {
+    grid-column: 2 / -1;
+    margin-top: 0.25rem;
+  }
+
+  .analysis-summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .summary-counts {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}

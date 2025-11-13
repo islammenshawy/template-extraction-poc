@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: template-extraction-service
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/swift_templates}
+      auto-index-creation: true
+
+  elasticsearch:
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:9200}
+    socket-timeout: 30s
+    connection-timeout: 10s
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+logging:
+  level:
+    com.tradefinance: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.data.elasticsearch: DEBUG
+
+template:
+  extraction:
+    clustering:
+      max-iterations: 100
+      min-clusters: 2
+      max-clusters: 10
+      convergence-threshold: 0.001
+    embeddings:
+      model-name: sentence-transformers/all-MiniLM-L6-v2
+      dimension: 384
+      cache-size: 10000
+    similarity:
+      threshold: 0.85
+
+jwt:
+  secret: ${JWT_SECRET:myDefaultSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+app:
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:3000}
+  auth:
+    enabled: ${AUTH_ENABLED:true}
+
+azure:
+  openai:
+    api-key: ${AZURE_OPENAI_API_KEY:}
+    endpoint: ${AZURE_OPENAI_ENDPOINT:}
+    api-version: ${AZURE_OPENAI_API_VERSION:2024-02-15-preview}
+    deployment-name: ${AZURE_OPENAI_DEPLOYMENT_NAME:}
+    enabled: ${AZURE_OPENAI_ENABLED:false}

@@ -1,0 +1,235 @@
+import React from 'react';
+import './FieldFindingsDisplay.css';
+
+/**
+ * Component to display structured field-level findings from LLM analysis
+ * with color-coded severity levels
+ */
+function FieldFindingsDisplay({ structuredAnalysis }) {
+  if (!structuredAnalysis) {
+    return null;
+  }
+
+  // Map severity to colors
+  const getSeverityColor = (severity) => {
+    const colors = {
+      CRITICAL: '#d32f2f',   // Red
+      WARNING: '#f57c00',    // Orange
+      INFO: '#1976d2',       // Blue
+      ACCEPTABLE: '#388e3c'  // Green
+    };
+    return colors[severity] || '#757575'; // Gray fallback
+  };
+
+  // Map severity to icons
+  const getSeverityIcon = (severity) => {
+    const icons = {
+      CRITICAL: '🔴',
+      WARNING: '🟡',
+      INFO: '🔵',
+      ACCEPTABLE: '🟢'
+    };
+    return icons[severity] || '⚪';
+  };
+
+  // Map risk level to colors
+  const getRiskColor = (riskLevel) => {
+    const colors = {
+      HIGH: '#d32f2f',      // Red
+      MEDIUM: '#f57c00',    // Orange
+      LOW: '#388e3c'        // Green
+    };
+    return colors[riskLevel] || '#757575';
+  };
+
+  const getRiskIcon = (riskLevel) => {
+    const icons = {
+      HIGH: '⚠️',
+      MEDIUM: '⚡',
+      LOW: '✅'
+    };
+    return icons[riskLevel] || '📊';
+  };
+
+  // Group findings by severity for summary
+  const criticalFindings = structuredAnalysis.fieldFindings?.filter(f => f.severity === 'CRITICAL') || [];
+  const warningFindings = structuredAnalysis.fieldFindings?.filter(f => f.severity === 'WARNING') || [];
+  const infoFindings = structuredAnalysis.fieldFindings?.filter(f => f.severity === 'INFO') || [];
+  const acceptableFindings = structuredAnalysis.fieldFindings?.filter(f => f.severity === 'ACCEPTABLE') || [];
+
+  return (
+    <div className="field-findings-container">
+      {/* Overall Risk Assessment */}
+      {structuredAnalysis.overallRisk && (
+        <div className="risk-assessment-header" style={{ borderLeftColor: getRiskColor(structuredAnalysis.overallRisk) }}>
+          <div className="risk-badge" style={{ backgroundColor: getRiskColor(structuredAnalysis.overallRisk) }}>
+            {getRiskIcon(structuredAnalysis.overallRisk)} {structuredAnalysis.overallRisk} RISK
+          </div>
+          {structuredAnalysis.transactionSummary && (
+            <div className="transaction-summary">
+              {structuredAnalysis.transactionSummary}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Findings Summary */}
+      {structuredAnalysis.fieldFindings && structuredAnalysis.fieldFindings.length > 0 && (
+        <div className="findings-summary">
+          <h5>Field-Level Analysis</h5>
+          <div className="summary-badges">
+            {criticalFindings.length > 0 && (
+              <span className="summary-badge" style={{ backgroundColor: getSeverityColor('CRITICAL') }}>
+                🔴 {criticalFindings.length} Critical
+              </span>
+            )}
+            {warningFindings.length > 0 && (
+              <span className="summary-badge" style={{ backgroundColor: getSeverityColor('WARNING') }}>
+                🟡 {warningFindings.length} Warning
+              </span>
+            )}
+            {infoFindings.length > 0 && (
+              <span className="summary-badge" style={{ backgroundColor: getSeverityColor('INFO') }}>
+                🔵 {infoFindings.length} Info
+              </span>
+            )}
+            {acceptableFindings.length > 0 && (
+              <span className="summary-badge" style={{ backgroundColor: getSeverityColor('ACCEPTABLE') }}>
+                🟢 {acceptableFindings.length} Acceptable
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Field Findings - Grouped by Severity */}
+      {structuredAnalysis.fieldFindings && structuredAnalysis.fieldFindings.length > 0 && (
+        <div className="field-findings-list">
+          {/* Critical Findings First */}
+          {criticalFindings.length > 0 && (
+            <div className="severity-group">
+              <h6 className="severity-group-header" style={{ color: getSeverityColor('CRITICAL') }}>
+                🔴 Critical Issues ({criticalFindings.length})
+              </h6>
+              {criticalFindings.map((finding, idx) => (
+                <FieldFindingCard key={`critical-${idx}`} finding={finding} color={getSeverityColor('CRITICAL')} />
+              ))}
+            </div>
+          )}
+
+          {/* Warning Findings */}
+          {warningFindings.length > 0 && (
+            <div className="severity-group">
+              <h6 className="severity-group-header" style={{ color: getSeverityColor('WARNING') }}>
+                🟡 Warnings ({warningFindings.length})
+              </h6>
+              {warningFindings.map((finding, idx) => (
+                <FieldFindingCard key={`warning-${idx}`} finding={finding} color={getSeverityColor('WARNING')} />
+              ))}
+            </div>
+          )}
+
+          {/* Info Findings */}
+          {infoFindings.length > 0 && (
+            <div className="severity-group">
+              <h6 className="severity-group-header" style={{ color: getSeverityColor('INFO') }}>
+                🔵 Information ({infoFindings.length})
+              </h6>
+              {infoFindings.map((finding, idx) => (
+                <FieldFindingCard key={`info-${idx}`} finding={finding} color={getSeverityColor('INFO')} />
+              ))}
+            </div>
+          )}
+
+          {/* Acceptable Findings */}
+          {acceptableFindings.length > 0 && (
+            <div className="severity-group">
+              <h6 className="severity-group-header" style={{ color: getSeverityColor('ACCEPTABLE') }}>
+                🟢 Acceptable ({acceptableFindings.length})
+              </h6>
+              {acceptableFindings.map((finding, idx) => (
+                <FieldFindingCard key={`acceptable-${idx}`} finding={finding} color={getSeverityColor('ACCEPTABLE')} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Recommendation */}
+      {structuredAnalysis.recommendation && (
+        <div className="analysis-recommendation">
+          <h5>💡 Recommendation</h5>
+          <p>{structuredAnalysis.recommendation}</p>
+        </div>
+      )}
+
+      {/* Additional Notes */}
+      {structuredAnalysis.notes && (
+        <div className="analysis-notes">
+          <h5>📝 Notes</h5>
+          <p>{structuredAnalysis.notes}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Individual field finding card component
+ */
+function FieldFindingCard({ finding, color }) {
+  return (
+    <div className="field-finding-card" style={{ borderLeftColor: color }}>
+      {/* Field Header */}
+      <div className="finding-header">
+        <div className="field-identifier">
+          <span className="field-tag" style={{ backgroundColor: color }}>
+            {finding.fieldTag}
+          </span>
+          <span className="field-name">{finding.fieldName}</span>
+        </div>
+      </div>
+
+      {/* Description */}
+      {finding.description && (
+        <div className="finding-description">
+          {finding.description}
+        </div>
+      )}
+
+      {/* Values Comparison */}
+      {(finding.actualValue || finding.expectedValue) && (
+        <div className="values-comparison">
+          {finding.expectedValue && (
+            <div className="value-box expected-value">
+              <span className="value-label">Expected:</span>
+              <span className="value-text">{finding.expectedValue}</span>
+            </div>
+          )}
+          {finding.actualValue && (
+            <div className="value-box actual-value">
+              <span className="value-label">Actual:</span>
+              <span className="value-text">{finding.actualValue}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Business Impact */}
+      {finding.businessImpact && (
+        <div className="business-impact">
+          <strong>Impact:</strong> {finding.businessImpact}
+        </div>
+      )}
+
+      {/* Recommendation */}
+      {finding.recommendation && (
+        <div className="finding-recommendation">
+          <strong>Action:</strong> {finding.recommendation}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default FieldFindingsDisplay;
