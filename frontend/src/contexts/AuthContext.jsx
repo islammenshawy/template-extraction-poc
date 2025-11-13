@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { authApi } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -56,10 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', {
-        email,
-        password
-      });
+      const response = await authApi.login(email, password);
 
       const { token: authToken, email: userEmail } = response.data;
 
@@ -83,13 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, invitationToken) => {
     try {
-      const response = await axios.post(
-        `http://localhost:8080/api/auth/register?token=${invitationToken}`,
-        {
-          email,
-          password
-        }
-      );
+      const response = await authApi.register(email, password, invitationToken);
 
       return { success: true, message: 'Registration successful! Please login.' };
     } catch (error) {
