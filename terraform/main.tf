@@ -278,7 +278,7 @@ resource "azurerm_container_app" "frontend" {
       content {
         name   = "cloudflared"
         image  = "${data.azurerm_container_registry.acr.login_server}/cloudflared:latest"
-        cpu    = 0.5
+        cpu    = 0.25
         memory = "0.5Gi"
 
         command = var.cloudflare_tunnel_token != "" ? [
