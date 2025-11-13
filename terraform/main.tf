@@ -170,8 +170,8 @@ resource "azurerm_container_group" "elasticsearch" {
     }
 
     environment_variables = {
-      "discovery.type"         = "single-node"
-      "xpack.security.enabled" = "false"
+      "discovery_type"         = "single-node"
+      "xpack_security_enabled" = "false"
       "ES_JAVA_OPTS"           = "-Xms512m -Xmx512m"
     }
 

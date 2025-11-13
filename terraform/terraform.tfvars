@@ -12,7 +12,7 @@ cosmosdb_database_name    = "swift-templates"
 cosmosdb_enable_free_tier = true
 
 # Feature Flags
-enable_elasticsearch = true
+enable_elasticsearch = false
 
 # Tags
 tags = {
