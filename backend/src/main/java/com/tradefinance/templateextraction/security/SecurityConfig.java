@@ -63,17 +63,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Value("${cors.allowed.origins:http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001}")
+    private String allowedOrigins;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow frontend origins
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "http://localhost:3001",
-                "http://127.0.0.1:3000",
-                "http://127.0.0.1:3001"
-        ));
+        // Allow frontend origins from environment variable
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
 
         // Allow all HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
