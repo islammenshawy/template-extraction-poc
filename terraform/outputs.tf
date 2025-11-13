@@ -5,18 +5,18 @@ output "resource_group_name" {
 
 output "acr_login_server" {
   description = "Azure Container Registry login server"
-  value       = azurerm_container_registry.acr.login_server
+  value       = data.azurerm_container_registry.acr.login_server
 }
 
 output "acr_admin_username" {
   description = "Azure Container Registry admin username"
-  value       = azurerm_container_registry.acr.admin_username
+  value       = data.azurerm_container_registry.acr.admin_username
   sensitive   = true
 }
 
 output "acr_admin_password" {
   description = "Azure Container Registry admin password"
-  value       = azurerm_container_registry.acr.admin_password
+  value       = data.azurerm_container_registry.acr.admin_password
   sensitive   = true
 }
 

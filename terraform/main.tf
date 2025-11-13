@@ -193,7 +193,7 @@ resource "azurerm_container_group" "backend" {
 
   container {
     name   = "backend"
-    image  = "${azurerm_container_registry.acr.login_server}/template-extraction-backend:${var.backend_image_tag}"
+    image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-backend:${var.backend_image_tag}"
     cpu    = var.backend_container_cpu
     memory = var.backend_container_memory
 
@@ -241,9 +241,9 @@ resource "azurerm_container_group" "backend" {
   }
 
   image_registry_credential {
-    server   = azurerm_container_registry.acr.login_server
-    username = azurerm_container_registry.acr.admin_username
-    password = azurerm_container_registry.acr.admin_password
+    server   = data.azurerm_container_registry.acr.login_server
+    username = data.azurerm_container_registry.acr.admin_username
+    password = data.azurerm_container_registry.acr.admin_password
   }
 
   tags = merge(var.tags, { Environment = var.environment })
@@ -266,7 +266,7 @@ resource "azurerm_container_group" "frontend" {
 
   container {
     name   = "frontend"
-    image  = "${azurerm_container_registry.acr.login_server}/template-extraction-frontend:${var.frontend_image_tag}"
+    image  = "${data.azurerm_container_registry.acr.login_server}/template-extraction-frontend:${var.frontend_image_tag}"
     cpu    = var.frontend_container_cpu
     memory = var.frontend_container_memory
 
@@ -281,9 +281,9 @@ resource "azurerm_container_group" "frontend" {
   }
 
   image_registry_credential {
-    server   = azurerm_container_registry.acr.login_server
-    username = azurerm_container_registry.acr.admin_username
-    password = azurerm_container_registry.acr.admin_password
+    server   = data.azurerm_container_registry.acr.login_server
+    username = data.azurerm_container_registry.acr.admin_username
+    password = data.azurerm_container_registry.acr.admin_password
   }
 
   tags = merge(var.tags, { Environment = var.environment })
