@@ -213,7 +213,7 @@ resource "azurerm_container_group" "backend" {
       "SPRING_ELASTICSEARCH_URIS"        = var.enable_elasticsearch ? "http://${azurerm_container_group.elasticsearch[0].fqdn}:${var.elasticsearch_port}" : ""
       "SERVER_PORT"                      = tostring(var.backend_port)
       "ANTHROPIC_API_KEY"                = var.anthropic_api_key
-      "CORS_ALLOWED_ORIGINS"             = "http://${azurerm_container_group.frontend.fqdn}"
+      "CORS_ALLOWED_ORIGINS"             = "*"
     }
 
     secure_environment_variables = {
@@ -292,6 +292,4 @@ resource "azurerm_container_group" "frontend" {
   }
 
   tags = merge(var.tags, { Environment = var.environment })
-
-  depends_on = [azurerm_container_group.backend]
 }
