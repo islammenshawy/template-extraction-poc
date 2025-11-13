@@ -218,10 +218,10 @@ resource "azurerm_container_group" "backend" {
         port   = var.backend_port
         scheme = "Http"
       }
-      initial_delay_seconds = 60
+      initial_delay_seconds = 180
       period_seconds        = 30
-      failure_threshold     = 3
-      timeout_seconds       = 10
+      failure_threshold     = 5
+      timeout_seconds       = 15
     }
 
     readiness_probe {
@@ -230,10 +230,10 @@ resource "azurerm_container_group" "backend" {
         port   = var.backend_port
         scheme = "Http"
       }
-      initial_delay_seconds = 30
-      period_seconds        = 10
-      failure_threshold     = 3
-      timeout_seconds       = 5
+      initial_delay_seconds = 120
+      period_seconds        = 15
+      failure_threshold     = 5
+      timeout_seconds       = 10
     }
   }
 
