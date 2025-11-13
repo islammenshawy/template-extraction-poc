@@ -15,7 +15,7 @@ resource "azurerm_resource_group" "main" {
 # Azure Container Registry - Reference existing ACR
 data "azurerm_container_registry" "acr" {
   name                = var.acr_name != "" ? var.acr_name : "templateextractionacrbd4265"
-  resource_group_name = azurerm_resource_group.main.name
+  resource_group_name = "template-extraction-acr-rg"
 }
 
 # Cosmos DB Account (MongoDB API) - Free tier
