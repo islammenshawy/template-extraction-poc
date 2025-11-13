@@ -12,15 +12,10 @@ resource "azurerm_resource_group" "main" {
   tags     = merge(var.tags, { Environment = var.environment })
 }
 
-# Azure Container Registry - Free tier (Basic)
-resource "azurerm_container_registry" "acr" {
-  name                = var.acr_name != "" ? var.acr_name : "templateextraction${random_string.suffix.result}"
+# Azure Container Registry - Reference existing ACR
+data "azurerm_container_registry" "acr" {
+  name                = var.acr_name != "" ? var.acr_name : "templateextractionacrbd4265"
   resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  sku                 = var.acr_sku
-  admin_enabled       = true
-
-  tags = merge(var.tags, { Environment = var.environment })
 }
 
 # Cosmos DB Account (MongoDB API) - Free tier
