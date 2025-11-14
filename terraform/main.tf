@@ -152,7 +152,7 @@ resource "azurerm_container_app" "backend" {
   revision_mode                = "Single"
 
   template {
-    min_replicas = 0  # Scale to zero when idle (free tier optimization)
+    min_replicas = 1  # Keep one instance running to avoid cold start timeouts
     max_replicas = 1
 
     container {
@@ -257,7 +257,7 @@ resource "azurerm_container_app" "frontend" {
   revision_mode                = "Single"
 
   template {
-    min_replicas = 0  # Scale to zero when idle (free tier optimization)
+    min_replicas = 1  # Keep one instance running to avoid cold start timeouts
     max_replicas = 1
 
     container {
