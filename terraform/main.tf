@@ -191,6 +191,11 @@ resource "azurerm_container_app" "backend" {
         secret_name = "jwt-secret"
       }
 
+      env {
+        name  = "SPRING_ELASTICSEARCH_URIS"
+        value = "http://127.0.0.1:9200"
+      }
+
       liveness_probe {
         transport = "HTTP"
         path      = "/actuator/health"
@@ -201,6 +206,34 @@ resource "azurerm_container_app" "backend" {
         transport = "HTTP"
         path      = "/actuator/health/readiness"
         port      = var.backend_port
+      }
+    }
+
+    # Elasticsearch sidecar container
+    container {
+      name   = "elasticsearch"
+      image  = "docker.elastic.co/elasticsearch/elasticsearch:8.11.0"
+      cpu    = 1.0
+      memory = "2Gi"
+
+      env {
+        name  = "discovery.type"
+        value = "single-node"
+      }
+
+      env {
+        name  = "xpack.security.enabled"
+        value = "false"
+      }
+
+      env {
+        name  = "xpack.security.http.ssl.enabled"
+        value = "false"
+      }
+
+      env {
+        name  = "ES_JAVA_OPTS"
+        value = "-Xms512m -Xmx512m"
       }
     }
   }
