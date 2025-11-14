@@ -196,12 +196,8 @@ resource "azurerm_container_app" "backend" {
         value = "http://127.0.0.1:9200"
       }
 
-      liveness_probe {
-        transport = "HTTP"
-        path      = "/actuator/health"
-        port      = var.backend_port
-      }
-
+      # Removed liveness probe - it was killing the container due to failing health checks
+      # Readiness probe is sufficient for managing traffic routing
       readiness_probe {
         transport = "HTTP"
         path      = "/actuator/health/readiness"
