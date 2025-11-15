@@ -199,9 +199,14 @@ resource "azurerm_container_app" "backend" {
       # Removed liveness probe - it was killing the container due to failing health checks
       # Readiness probe is sufficient for managing traffic routing
       readiness_probe {
-        transport = "HTTP"
-        path      = "/actuator/health/readiness"
-        port      = var.backend_port
+        transport               = "HTTP"
+        path                    = "/actuator/health/readiness"
+        port                    = var.backend_port
+        initial_delay_seconds   = 30  # Wait 30s before first check
+        timeout_seconds         = 10  # Increased from default 1s to 10s
+        period_seconds          = 10  # Check every 10 seconds
+        success_threshold       = 1   # Reduced from 3 to 1 for faster readiness
+        failure_threshold       = 3   # Keep at 3 to avoid false negatives
       }
     }
 
