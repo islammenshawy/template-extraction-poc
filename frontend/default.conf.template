@@ -2,6 +2,10 @@ server {
     listen 80;
     server_name localhost;
 
+    # Increase header size limits to handle large requests
+    large_client_header_buffers 4 32k;
+    client_max_body_size 50M;
+
     root /usr/share/nginx/html;
     index index.html;
 
@@ -27,6 +31,12 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_read_timeout 300s;
         proxy_ssl_server_name on;
+        
+        # Buffer settings for large responses
+        proxy_buffering on;
+        proxy_buffer_size 128k;
+        proxy_buffers 4 256k;
+        proxy_busy_buffers_size 256k;
     }
 
     # Handle SPA routing - prevent caching of index.html and other HTML files
