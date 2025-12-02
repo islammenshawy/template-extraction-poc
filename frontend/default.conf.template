@@ -1,0 +1,50 @@
+server {
+    listen 80;
+    server_name localhost;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Handle assets with long-term caching (CSS, JS, images, etc.)
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform, immutable";
+    }
+
+    # Handle static files with appropriate caching
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform, immutable";
+    }
+
+    # Proxy API requests to backend service
+    location /api/ {
+        proxy_pass ${BACKEND_URL}/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 300s;
+        proxy_ssl_server_name on;
+    }
+
+    # Handle SPA routing - prevent caching of index.html and other HTML files
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+        add_header Pragma "no-cache";
+        add_header Expires "0";
+    }
+
+    # Health check endpoint - no caching
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+    }
+}
