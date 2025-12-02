@@ -212,3 +212,9 @@ variable "one_time_setup_enabled" {
   type        = string
   default     = "false"
 }
+
+variable "auth_enabled" {
+  description = "Enable authentication"
+  type        = string
+  default     = "true"
+}

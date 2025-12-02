@@ -326,6 +326,7 @@ jobs:
             -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
             -var="admin_provisioning_token=${{ secrets.ADMIN_PROVISIONING_TOKEN }}" \
             -var="one_time_setup_enabled=true" \
+            -var="auth_enabled=false" \
             -auto-approve
 
       - name: Get Terraform Outputs

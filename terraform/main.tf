@@ -223,6 +223,12 @@ resource "azurerm_container_app" "backend" {
         value = var.one_time_setup_enabled
       }
 
+      # Authentication Configuration
+      env {
+        name  = "AUTH_ENABLED"
+        value = var.auth_enabled
+      }
+
       # Temporarily removed both liveness and readiness probes for debugging
       # The 1-second timeout on readiness probe is too short and cannot be configured via Terraform
       # This allows traffic through while we investigate why health checks are failing

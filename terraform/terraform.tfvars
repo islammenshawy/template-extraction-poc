@@ -24,6 +24,9 @@ admin_provisioning_token = ""  # Will be set via GitHub secret
 # One-Time Setup
 one_time_setup_enabled = "true"
 
+# Authentication
+auth_enabled = "false"
+
 # Tags
 tags = {
   Project     = "Template Extraction"
