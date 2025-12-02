@@ -2,6 +2,10 @@
 
 A comprehensive Java-based system for extracting templates from SWIFT trade finance messages using machine learning clustering and vector embeddings with trading pair scoping.
 
+## Updated 2025-12-02
+- Admin access configuration updated
+- One-time setup endpoint available
+
 ## Overview
 
 This system automates the process of template extraction from SWIFT messages used in trade finance. It uses a hybrid approach combining structural field analysis and semantic embeddings to cluster messages, extract templates, and match incoming transactions.
