@@ -30,6 +30,11 @@ server {
         proxy_cache_bypass $http_upgrade;
         proxy_read_timeout 300s;
         proxy_ssl_server_name on;
+        
+        # Add debugging headers
+        add_header X-Debug-Proxy-Pass "${BACKEND_URL}" always;
+        add_header X-Debug-Host "$host" always;
+        add_header X-Debug-URI "$request_uri" always;
     }
 
     # Handle SPA routing - prevent caching of index.html and other HTML files
