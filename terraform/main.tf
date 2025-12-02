@@ -196,6 +196,27 @@ resource "azurerm_container_app" "backend" {
         value = "http://127.0.0.1:9200"
       }
 
+      # Admin Provisioning Configuration
+      env {
+        name  = "ADMIN_PROVISIONING_ENABLED"
+        value = var.admin_provisioning_enabled
+      }
+
+      env {
+        name  = "ADMIN_DEFAULT_EMAIL"
+        value = var.admin_default_email
+      }
+
+      env {
+        name  = "ADMIN_DEFAULT_PASSWORD"
+        value = var.admin_default_password
+      }
+
+      env {
+        name        = "ADMIN_PROVISIONING_TOKEN"
+        secret_name = "admin-provisioning-token"
+      }
+
       # Temporarily removed both liveness and readiness probes for debugging
       # The 1-second timeout on readiness probe is too short and cannot be configured via Terraform
       # This allows traffic through while we investigate why health checks are failing
@@ -243,7 +264,12 @@ resource "azurerm_container_app" "backend" {
 
   secret {
     name  = "jwt-secret"
-    value = var.jwt_secret != "" ? var.jwt_secret : random_string.suffix.result
+    value = var.jwt_secret
+  }
+
+  secret {
+    name  = "admin-provisioning-token"
+    value = var.admin_provisioning_token
   }
 
   registry {

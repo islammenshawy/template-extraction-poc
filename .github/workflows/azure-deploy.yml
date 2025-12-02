@@ -254,6 +254,7 @@ jobs:
             -var="anthropic_api_key=${{ secrets.ANTHROPIC_API_KEY }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
             -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
+            -var="admin_provisioning_token=${{ secrets.ADMIN_PROVISIONING_TOKEN }}" \
             -out=tfplan \
             -no-color
         continue-on-error: true
@@ -323,6 +324,7 @@ jobs:
             -var="anthropic_api_key=${{ secrets.ANTHROPIC_API_KEY }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
             -var="cloudflare_tunnel_token=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}" \
+            -var="admin_provisioning_token=${{ secrets.ADMIN_PROVISIONING_TOKEN }}" \
             -auto-approve
 
       - name: Get Terraform Outputs

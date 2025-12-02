@@ -179,3 +179,30 @@ variable "cloudflare_tunnel_token" {
   sensitive   = true
   default     = ""
 }
+
+# Admin Provisioning Variables
+variable "admin_provisioning_enabled" {
+  description = "Enable admin user provisioning on startup"
+  type        = string
+  default     = "false"
+}
+
+variable "admin_default_email" {
+  description = "Default admin email for initial setup"
+  type        = string
+  default     = "admin@template-extraction.com"
+}
+
+variable "admin_default_password" {
+  description = "Default admin password for initial setup"
+  type        = string
+  sensitive   = true
+  default     = "AdminPass123!"
+}
+
+variable "admin_provisioning_token" {
+  description = "Secret token for admin provisioning endpoint"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

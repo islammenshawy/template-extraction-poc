@@ -15,6 +15,12 @@ cosmosdb_enable_free_tier = true
 enable_elasticsearch = false
 enable_cloudflare_tunnel = true
 
+# Admin Provisioning
+admin_provisioning_enabled = "true"
+admin_default_email = "admin@template-extraction.com"
+admin_default_password = "AdminPass123!"
+admin_provisioning_token = ""  # Will be set via GitHub secret
+
 # Tags
 tags = {
   Project     = "Template Extraction"
