@@ -21,6 +21,9 @@ admin_default_email = "admin@template-extraction.com"
 admin_default_password = "AdminPass123!"
 admin_provisioning_token = ""  # Will be set via GitHub secret
 
+# One-Time Setup
+one_time_setup_enabled = "true"
+
 # Tags
 tags = {
   Project     = "Template Extraction"

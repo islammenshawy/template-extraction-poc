@@ -206,3 +206,9 @@ variable "admin_provisioning_token" {
   sensitive   = true
   default     = ""
 }
+
+variable "one_time_setup_enabled" {
+  description = "Enable one-time admin setup endpoint"
+  type        = string
+  default     = "false"
+}
