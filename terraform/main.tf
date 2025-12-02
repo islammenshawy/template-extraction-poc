@@ -337,7 +337,7 @@ resource "azurerm_container_app" "frontend" {
       
       env {
         name  = "BACKEND_URL"
-        value = "http://${azurerm_container_app.backend.name}.${var.environment}:8080"
+        value = "http://${azurerm_container_app.backend.name}.${azurerm_container_app_environment.main.name}.internal:8080"
       }
     }
 
