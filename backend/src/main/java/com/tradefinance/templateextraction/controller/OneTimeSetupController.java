@@ -37,10 +37,14 @@ public class OneTimeSetupController {
     @PostMapping("/create-admin")
     public ResponseEntity<?> createInitialAdmin() {
         
+        // Log for debugging
+        System.out.println("ONE_TIME_SETUP_ENABLED value: " + oneTimeSetupEnabled);
+        
         // Check if one-time setup is enabled
         if (!oneTimeSetupEnabled) {
+            System.out.println("ONE_TIME_SETUP_ENABLED is false - returning 403");
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("error", "One-time setup is disabled"));
+                    .body(Map.of("error", "One-time setup is disabled", "debug", "ONE_TIME_SETUP_ENABLED=" + oneTimeSetupEnabled));
         }
 
         try {
@@ -81,10 +85,12 @@ public class OneTimeSetupController {
      */
     @GetMapping("/status")
     public ResponseEntity<?> getSetupStatus() {
+        System.out.println("Setup status endpoint called - ONE_TIME_SETUP_ENABLED=" + oneTimeSetupEnabled);
         Map<String, Object> response = new HashMap<>();
         response.put("enabled", oneTimeSetupEnabled);
         response.put("message", oneTimeSetupEnabled ? 
             "One-time setup is enabled" : "One-time setup is disabled");
+        response.put("debug_env_value", System.getenv("ONE_TIME_SETUP_ENABLED"));
         return ResponseEntity.ok(response);
     }
 }
