@@ -29,7 +29,7 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_read_timeout 300s;
         proxy_ssl_server_name on;
@@ -44,6 +44,9 @@ server {
         # Header size settings for proxy
         proxy_headers_hash_max_size 1024;
         proxy_headers_hash_bucket_size 128;
+        
+        # Limit header sizes to prevent "Request Header Or Cookie Too Large" errors
+        proxy_max_temp_file_size 1024m;
     }
 
     # Handle SPA routing - prevent caching of index.html and other HTML files
