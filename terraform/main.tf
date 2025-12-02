@@ -334,6 +334,11 @@ resource "azurerm_container_app" "frontend" {
         name  = "VITE_API_BASE_URL"
         value = "https://${azurerm_container_app.backend.ingress[0].fqdn}/api"
       }
+      
+      env {
+        name  = "BACKEND_URL"
+        value = "http://${azurerm_container_app.backend.name}.${var.environment}:8080"
+      }
     }
 
     # Cloudflare Tunnel sidecar container for HTTPS with custom domain
