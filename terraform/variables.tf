@@ -1,7 +1,7 @@
 variable "resource_group_name" {
   description = "Name of the resource group"
   type        = string
-  default     = "template-extraction-rg"
+  default     = "template-extraction-prod-rg"
 }
 
 variable "location" {
@@ -13,7 +13,7 @@ variable "location" {
 variable "environment" {
   description = "Environment name (dev, staging, prod)"
   type        = string
-  default     = "dev"
+  default     = "prod"
 }
 
 variable "tags" {

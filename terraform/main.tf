@@ -173,7 +173,7 @@ resource "azurerm_container_app" "backend" {
 
       env {
         name  = "CORS_ALLOWED_ORIGINS"
-        value = "https://swift-template.islam-org.work,https://frontend-dev.orangebeach-7afdf297.eastus.azurecontainerapps.io"
+        value = "https://swift-template.islam-org.work,https://frontend-prod.orangebeach-7afdf297.eastus.azurecontainerapps.io"
       }
 
       env {

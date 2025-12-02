@@ -2,9 +2,9 @@
 # Copy this file to terraform.tfvars and fill in your values
 
 # Azure Configuration
-resource_group_name = "template-extraction-rg"
+resource_group_name = "template-extraction-prod-rg"
 location            = "eastus"
-environment         = "dev"
+environment         = "prod"
 
 # Container Registry (leave empty for auto-generation)
 acr_name = ""

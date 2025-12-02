@@ -1,7 +1,7 @@
 # Auto-generated terraform.tfvars
-resource_group_name = "template-extraction-rg"
+resource_group_name = "template-extraction-prod-rg"
 location            = "eastus"
-environment         = "dev"
+environment         = "prod"
 
 # Container Registry
 acr_name = "templateextractionacrbd4265"
