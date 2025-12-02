@@ -5,6 +5,7 @@ A comprehensive Java-based system for extracting templates from SWIFT trade fina
 ## Updated 2025-12-02
 - Admin access configuration updated
 - One-time setup endpoint available
+- Testing with authentication disabled
 
 ## Overview
 
