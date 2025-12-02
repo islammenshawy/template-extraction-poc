@@ -51,7 +51,8 @@ public class SecurityConfig {
                         // Public endpoints - no authentication required
                         .requestMatchers(
                                 "/api/auth/login",
-                                "/api/auth/register"
+                                "/api/auth/register",
+                                "/api/setup/**"
                         ).permitAll()
 
                         // All other endpoints require authentication
